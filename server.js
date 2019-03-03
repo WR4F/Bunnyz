@@ -23,6 +23,9 @@ app.get('/', function (request, response) {
 app.get('/login', function (request, response) {
 	response.sendFile(path.join(__dirname, 'html/login.html'));
 });
+app.get('/debugchat', function (request, response) {
+	response.sendFile(path.join(__dirname, 'html/chat.html'));
+});
 // Routing the url at path '/login' when user submits a form
 app.post('/login', async function (request, response) {
 	// response.sendFile(path.join(__dirname, 'html/login.html'));
