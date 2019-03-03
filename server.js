@@ -316,3 +316,10 @@ io.on('connection', function (socket) {});
 setInterval(function () {
 	io.sockets.emit('logthis', 'hi!');
 }, 2000);
+
+io.on('connection', function (socket) {
+	socket.emit('message', { user: 'Server', msg: "Connected" });
+	socket.on('message', function (data) {
+		socket.emit('message', { user: data.user, msg: data.msg });
+	});
+});
