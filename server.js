@@ -1,12 +1,13 @@
 // Dependencies
-var express = require('express');
-var http = require('http');
-var path = require('path');
-var socketIO = require('socket.io');
-var sqlite = require('sqlite');
+const http = require('http');
+const express = require('express');
+const qs = require('querystring')
+const path = require('path');
+const socketIO = require('socket.io');
+const sqlite = require('sqlite');
 
 // Using libraries to create obejcts for communication
-var app = express();
+const app = express();
 var server = http.Server(app);
 var io = socketIO(server);
 
@@ -14,7 +15,6 @@ var io = socketIO(server);
 app.set('port', 80);
 app.use(express.json())
 app.use('/scripts', express.static(__dirname + '/scripts'));
-app.use('/css', express.static(__dirname + '/css'));
 
 // Routing the url at path '/' to the index.html file in the html folder
 app.get('/', function (request, response) {
@@ -24,25 +24,41 @@ app.get('/login', function (request, response) {
 	response.sendFile(path.join(__dirname, 'html/login.html'));
 });
 // Routing the url at path '/login' when user submits a form
-app.post('/login', function (request, response) {
+app.post('/login', async function (request, response) {
 	// response.sendFile(path.join(__dirname, 'html/login.html'));
-	response.send("Thanks for your data my dog!\n")
-	console.log(request.query, request.body)
-	response.end(request.body)
+	request.postdata = null;
+	queryData = "";
+	request.on('data', (data) => {
+		queryData += data
+		if (queryData.length > 1e6) {
+			queryData = ""
+			req.connection.destroy()
+		}
+		request.postdata = qs.parse(queryData)
+		response.send("Thanks for your data my dog!\n" +
+			"Username: " + request.postdata["user"] +
+			", Password: " + request.postdata["pswd"])
+		console.log(request.postdata)
+	})
 
 });
 
-app.get('/db', function (request, response) {
-	response.send("yo dog lemme get you some data from the database.");
+app.get('/db', async function (request, response) {
+	// response.send("yo dog lemme get you some data from the database.");
 
 	try {
-		const dbPromise = Promise.resolve()
+		const dbPromise = await Promise.resolve()
 			.then(() => sqlite.open('./database.sqlite', {
 				Promise
 			}))
-			.then((db) => {
+			.then(async (db) => {
 				// interact with the database somehow
-				response.end("Some shit from the db: \n");
+				const [profilePosts] = await Promise.all([
+					// db.get('SELECT * FROM Post WHERE id = ?', req.params.id),
+					db.all('SELECT * FROM Profile')
+				]);
+				// pulling data from database (shows in browser)
+				response.send("Some shit from the db: \n" + JSON.stringify(profilePosts));
 			}).catch(() => {
 				throw Error("Oopsie woopsie i couldnt open the database and get my data properly so sorry senpai");
 			});

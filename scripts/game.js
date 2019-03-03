@@ -6,6 +6,7 @@ socket.on('logthis', function (data) {
 	count++;
 	console.log("New message: #" + count + ", Data: " + data);
 });
-function runCode(){
-    alert("hello World!");
+
+function runCode() {
+	alert("hello World!");
 }
