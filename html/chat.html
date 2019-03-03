@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>A Multiplayer Game</title>
+	<style>
+		#canvasBlock {
+			width: 500px;
+			height: 400px;
+			/* border: 50px solid black; */
+			background: rgb(0, 0, 0);
+		}
+		.titlebar{
+			width: 800px;
+			height: 100px;
+			background: rgb(39, 39, 39);
+		}
+	</style>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+</head>
+
+<body style="background:rgb(70, 69, 69); color:rgb(167, 167, 167);">
+	<div class="titlebar">
+		<h1 style="text-align:center">Chatter Bunnyz</h1>
+	</div>
+	<div class="serverbox">
+		<div class="servertitle">
+			<h3><u>Servers</u></h3>
+		</div>
+		<div class="serverlogs">
+			<p>#chat</p>
+			<p>&#9653rpg </p>
+			<p>#anime</p>
+			<p>&#9688pokemon</p>
+		</div>
+	</div>
+
+	<div class="chatbox">
+		<h3><u>Chat Box:</u><h3>
+	</div>
+	
+	<p>Other text here</p>
+	<p>Other text here</p>
+	<!-- <button onclick="runCode()">Click Me</button> -->
+
+	<canvas id="canvasBlock"></canvas>
+</body>
+<script src="/scripts/game.js"></script>
+
+</html>
