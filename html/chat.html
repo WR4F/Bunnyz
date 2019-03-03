@@ -36,7 +36,7 @@
 
 		.chatbox {
 			position: absolute;
-			bottom: 0;
+			bottom: 80px;
 			right: 300px;
 			left: 300px;
 			height: 150px;
@@ -61,6 +61,18 @@
 		.channel:hover {
 			color: yellow;
 		}
+
+		#textinput {
+			position: absolute;
+			bottom: 0;
+			left: 300px;
+			right: 300px;
+			height: 78px;
+			background: black;
+			color: white;
+			width: 750px;
+			border: 0;
+		}	
 	</style>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 </head>
@@ -109,26 +121,24 @@
 				</div>
 		</div>
 
-		<div class="chattobe" style="top:30px; height:20px;border-top:1px solid whitesmoke;">
-			<span class="privateuser" style="left:0; width:150px;margin: 0 0 0 5px;border-right: whitesmoke">
-			</span>
-			<span class="message" style="left:150px; right:0;margin: 0 0 0 5px;border-right: whitesmoke">
-			</span>
+		
+			<div class="chattobe" style="top:30px; height:20px;border-top:1px solid whitesmoke;">
+				<span class="privateuser" style="left:0; width:150px;margin: 0 0 0 5px;border-right: whitesmoke"></span>
+				<span class="message" style="left:150px; right:0;margin: 0 0 0 5px;border-right: whitesmoke"></span>
+			</div>
+					
 		</div>
 		
-	</div>
-
-	<div class="userbox">
-		<div class="userboxtitle" style="color: rgb(96, 143, 223);
-		text-align: right; border-bottom: 1px solid whitesmoke">
+		<div class="userbox">
+			<div class="userboxtitle" style="color: rgb(96, 143, 223);
+text-align: right; border-bottom: 1px solid whitesmoke">
 			<h3 style="margin: 5px 10px 5px 0"><u>Users</u></h3>
 		</div>
 	</div>
+	<script src="/scripts/game.js"></script>
+	<input id="textinput" onkeypress="return runScript(event)"></input>
+	
+	<div class = "gamebox" style = "width: 250px; height:5px;"></div>
 </body>
-<script src="/scripts/game.js"></script>
-
-<div class = "gamebox" style = "width: 250px; height:5px;">
-
-</div>
 
 </html>

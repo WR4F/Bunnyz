@@ -10,3 +10,12 @@ socket.on('logthis', function (data) {
 function runCode() {
 	alert("hello World!");
 }
+
+
+function runScript(e) {
+	if (e.keyCode == 13) {
+		var tb = document.getElementById("textinput");
+		socket.emit('broadcast',tb.value)
+
+	}
+}
