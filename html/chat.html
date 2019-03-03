@@ -5,45 +5,120 @@
 	<title>A Multiplayer Game</title>
 	<style>
 		#canvasBlock {
-			width: 500px;
-			height: 400px;
-			/* border: 50px solid black; */
-			background: rgb(0, 0, 0);
+			width: 700px;
+			height: 500px;
+			background: #344ac2;
 		}
-		.titlebar{
-			width: 800px;
-			height: 100px;
-			background: rgb(39, 39, 39);
+
+		.titlebar {
+			position: absolute;
+			top: 0;
+			right: 0;
+			left: 0;
+			padding: 15px;
+			color: white;
+			background: #171e47;
+		}
+
+		.serverbox {
+			position: absolute;
+			left: 0;
+			bottom: 0;
+			top: 110px;
+			width: 300px;
+			background:  #2a3782;
+			border-right: 1px solid whitesmoke;
+		}
+
+		.chatbox {
+			position: absolute;
+			bottom: 0;
+			right: 300px;
+			left: 300px;
+			height: 150px;
+			background: #2a3782;
+			border: 1px solid whitesmoke;
+		}
+
+		.userbox {
+			position: absolute;
+			right: 0;
+			bottom: 0;
+			width: 300px;
+			top: 110px;
+			background: #2a3782;
+			border-left: 1px solid whitesmoke;
+		}
+
+		.channel {
+			margin: 0 10px 0 10px;
+		}
+
+		.channel:hover {
+			color: yellow;
 		}
 	</style>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 </head>
 
-<body style="background:rgb(70, 69, 69); color:rgb(167, 167, 167);">
+<body style="background: #344ac2; color:whitesmoke;">
+
 	<div class="titlebar">
 		<h1 style="text-align:center">Chatter Bunnyz</h1>
 	</div>
+
 	<div class="serverbox">
-		<div class="servertitle">
-			<h3><u>Servers</u></h3>
+		<div class="servertitle" style="color: rgb(45, 158, 45);
+		 text-align: right; border-bottom: 1px solid whitesmoke">
+			<h3 style="margin: 5px 10px 5px 0"><u>Servers</u></h3>
 		</div>
 		<div class="serverlogs">
-			<p>#chat</p>
-			<p>&#9653rpg </p>
-			<p>#anime</p>
-			<p>&#9688pokemon</p>
+			<div class="channel">#chat</div>
+			<div class="channel">&#9653rpg </div>
+			<div class="channel">#anime</div>
+			<div class="channel">&#9688pokemon</div>
 		</div>
 	</div>
 
 	<div class="chatbox">
-		<h3><u>Chat Box:</u><h3>
-	</div>
-	
-	<p>Other text here</p>
-	<p>Other text here</p>
-	<!-- <button onclick="runCode()">Click Me</button> -->
+		<div class="chatboxtitle" style="border-bottom:1px solid whitesmoke;">
+			<h3 style="color: rgb(255, 255, 0); margin: 5px 0 5px 10px">Chat Box:</h3>
+		</div>
 
-	<canvas id="canvasBlock"></canvas>
+		<div class="chattedbox" style="height:0px;bottom:20px;">
+			<div class="chismis">
+				<span class="user" style="left:0; width:150px;margin: 0 0 0 5px">
+					Player 1:
+				</span>
+				<span class="chattedmessade" style="right:0,; left:150px;margin: 0 0 0 5px">
+					Other text here
+				</span>
+			</div>
+			<div class="chismis">
+					<span class="user" style="left:0; width:150px;margin: 0 0 0 5px">
+						Player 2:
+					</span>
+					<span class="chattedmessade" style="right:0,; left:150px;margin: 0 0 0 5px">
+						Other text here
+					</span>
+				</div>
+		</div>
+
+		<div class="chattobe" style="top:30px; height:20px;border-top:1px solid whitesmoke;">
+			<span class="privateuser" style="left:0; width:150px;margin: 0 0 0 5px;border-right: whitesmoke">
+			</span>
+			<span class="message" style="left:150px; right:0;margin: 0 0 0 5px;border-right: whitesmoke">
+			</span>
+		</div>
+		
+	</div>
+
+	<div class="userbox">
+		<div class="userboxtitle" style="color: rgb(96, 143, 223);
+		text-align: right; border-bottom: 1px solid whitesmoke">
+			<h3 style="margin: 5px 10px 5px 0"><u>Users</u></h3>
+		</div>
+	</div>
 </body>
 <script src="/scripts/game.js"></script>
 

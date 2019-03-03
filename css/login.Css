@@ -1,18 +1,60 @@
-h1{
+body
+{
+    background: #344ac2;
+    color:#000000;
+    font-family: sans-serif;
+}
+h1
+{
     margin: -top;
     padding: 0 0 20px;
     text-align: center;
     font-size: 28px;
+    color: white;
 }
-form{
+form
+{
     margin: 0;
     padding: 0 0 20px;
     text-align: center;
     font-size: 16px;
+    color: white;
 }
-div{
+div
+{
     font-weight: bold;
 }
-input{
+input
+{
     margin-bottom: 20px;
+    border: none;
+    border-bottom: 1px solid rgb(238, 238, 238);
+    background: transparent;
+    height: 40px;
+    color: #050101;
+    font-size: 16px;
+}
+button[type="submit"]
+{
+        text-align: center;
+		text-decoration: none;
+		display: block;
+ 		margin: auto;
+    	cursor: pointer;
+    	background: rgb(245, 245, 245);
+    	color: #000000;
+    	width: 10%;
+		border-radius: 20px;
+		font-size: 22px; 
+		padding: 9px;
+}
+a{
+    text-decoration: none;
+    font-size: 14px;
+    line-height: 20px;
+    color: black
+}
+a:hover
+{
+    COLOR: white;
 }
