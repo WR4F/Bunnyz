@@ -320,6 +320,6 @@ setInterval(function () {
 io.on('connection', function (socket) {
 	socket.emit('message', { user: 'Server', msg: "Connected" });
 	socket.on('message', function (data) {
-		socket.emit('message', { user: data.user, msg: data.msg });
+		io.sockets.emit('message', { user: data.user, msg: data.msg });
 	});
 });
