@@ -28,7 +28,7 @@ app.post('/login', function (request, response) {
 	response.send("Thanks for your data my dog!\n")
 	console.log(request.query, request.body)
 	response.end(request.body)
-	
+
 });
 
 app.get('/db', function (request, response) {
@@ -36,7 +36,9 @@ app.get('/db', function (request, response) {
 
 	try {
 		const dbPromise = Promise.resolve()
-			.then(() => sqlite.open('./database.sqlite', { Promise }))
+			.then(() => sqlite.open('./database.sqlite', {
+				Promise
+			}))
 			.then((db) => {
 				// interact with the database somehow
 				response.end("Some shit from the db: \n");
@@ -61,7 +63,7 @@ server.listen(80, function () {
 
 
 // Starts the WebSocket server
-io.on('connection', function (socket) { });
+io.on('connection', function (socket) {});
 
 // Every 2000 seconds, send "hi!" to people connected
 setInterval(function () {
