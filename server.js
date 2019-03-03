@@ -19,17 +19,29 @@ app.use('/scripts', express.static(__dirname + '/scripts'));
 app.use('/css', express.static(__dirname + '/css'));
 
 
-function getCookieDebug(request) {
-	// console.log("Session: " + JSON.stringify(request.session))
+function getCookie(request) {
+	try {
+		const cookieRegex = request.headers["cookie"].match(/sessiontoken=(.{10})/)
+		if (cookieRegex != null && cookieRegex.length > 1 && cookieRegex[1] != null && cookieRegex[1].trim() != '') {
+			const browserCookie = cookieRegex[1];
+			console.log("Cookie from browser: " + browserCookie)
+			return browserCookie
+		}
+	} catch (error) {
+		// Tried to access cookie but none exists on request
+		console.error("Oopsie whoopsie we couldn't load browser cookie data, error details:\n", error);
+	}
+	return null;
 }
 
 function setCookie(request, response, cookie) {
-	// console.log("Session: " + JSON.stringify(request.session))
+	console.log("Prev sessiontoken: ")
+	console.log(getCookie(request));
+
 	response.writeHead(200, {
-		"Set-Cookie": "sessiontoken=" + cookie
+		"Set-Cookie": "sessiontoken=" + cookie + ";"
 	})
-
-
+	console.log("Set cookie on browser to '" + cookie + "'!");
 }
 
 
@@ -38,34 +50,83 @@ app.get('/', function (request, response) {
 	response.sendFile(path.join(__dirname, 'html/index.html'));
 });
 app.get('/login', function (request, response) {
-	response.sendFile(path.join(__dirname, 'html/login.html'));
+	response.set('Content-Type', 'text/html');
+	console.log("Cookie status: ", getCookie(request));
+
+	if (getCookie(request) != undefined && getCookie(request) != null) {
+		// The user is going to the /login page but has a sessiontoken cookie
+		// Redirect them to chat. If token is invalid, the cookie will get cleared
+		response.end('<h2>Session active, redirecting to chat...</h2>' +
+			'<meta http-equiv="refresh" content="0; url=/chat">')
+	} else {
+		// No cookie? Give them the login form
+		response.sendFile(path.join(__dirname, 'html/login.html'));
+	}
+});
+
+app.get('/logout', function (request, response) {
+	setCookie(request, response, "; expires=Thu, 01 Jan 1970 00:00:00 GMT")
+	response.end('<h2>Logging out...</h2><meta http-equiv="refresh" content="1; url=/">')
 });
 app.get('/register', function (request, response) {
+	// TODO: Implement this
 	response.sendFile(path.join(__dirname, 'html/register.html'));
 });
-app.get('/chat', function (request, response) {
+app.get('/chat', async function (request, response) {
+	response.set('Content-Type', 'text/html');
+	// Check if the user has a cookie session, redirect to login if not
+	if (getCookie(request) == null) {
+		response.end('<h2>Session expired (or invalid), redirecting to login...</h2>' +
+			'<meta http-equiv="refresh" content="3; url=/login">')
+	} else { // If so, check if the database has this session cookie anywhere and login with that user
+		try {
+			const dbPromise = await Promise.resolve()
+				.then(() => sqlite.open('./database.sqlite', {
+					Promise
+				}))
+				.then(async (db) => {
+					// Look for cookie matching browser's cookie
+					const [userRow] = await Promise.all([
+						db.get('SELECT * FROM Users WHERE Cookies = ?', getCookie(request))
+					]);
+					if (userRow == undefined) {
+						// No dice, expire the cookie and send them back to login
+						setCookie(request, response, "; expires=Thu, 01 Jan 1970 00:00:00 GMT")
+						response.end('<h2>Session expired, redirecting to login...</h2>' +
+							'<meta http-equiv="refresh" content="3; url=/login">')
+					} else {
+						// Hey, a valid cookie! Give them the chat.html page
+						response.sendFile(path.join(__dirname, 'html/chat.html'));
+					}
 
-	response.sendFile(path.join(__dirname, 'html/chat.html'));
+				}).catch((error) => {
+					app.use('/scripts', express.static(__dirname + '/scripts'));
+					throw Error("Oopsie woopsie i couldnt open the database and check for matching cookies so sorry senpai, error:\n" + error);
+				});
+
+		} catch (error) {
+			console.log("We made a little fucksie wucksie:\n" + error);
+			response.send("We made a little fucksie wucksie:\n" + error);
+		}
+	}
 });
 app.get('/debugchat', function (request, response) {
 	response.sendFile(path.join(__dirname, 'html/chat.html'));
 });
 // Routing the url at path '/login' when user submits a form
 app.post('/login', async function (request, response) {
+	response.set('Content-Type', 'text/html');
 	// response.sendFile(path.join(__dirname, 'html/login.html'));
-	getCookieDebug(request);
 	request.postdata = null;
 	queryData = "";
 	request.on('data', async (data) => {
 		queryData += data
 		if (queryData.length > 1e6) {
 			queryData = ""
-			req.connection.destroy()
+			request.connection.destroy()
 		}
 		request.postdata = qs.parse(queryData)
-		// response.send("Thanks for your data my dog!\n" +
-		// 	"Username: " + request.postdata["user"] +
-		// 	", Password: " + request.postdata["pswd"])
+
 		console.log(request.postdata)
 
 		// Now that we have the post data (login credentials being tried by the user)
@@ -83,15 +144,38 @@ app.post('/login', async function (request, response) {
 					const [userRow] = await Promise.all([
 						db.get('SELECT * FROM Users WHERE Username = ? AND Password = ?', userPOST, pswdPOST)
 					]);
-					console.log(userRow);
-					if (userRow == undefined) {
+					console.log("Accessing: \n", userRow);
+					if (userRow == undefined) { // User did not enter user/pswd creds that exist in db.
+						// Redirect back to GET.
 						response.end('<h1>Incorrect credentials, try again!</h1>' +
 							'<meta http-equiv="refresh" content="3; url=/login">')
-					} else {
-						cookie = "" + Math.round(Math.random() * 10);
+					} else { // User entered valid creds.
+
+						// Generate cookie as a 10 digit number
+						// Something like base64 would be better but whatever its been 30+ hours of coding
+						cookie = (Math.round(Math.random() * 10000000000)).toString()
+
+						// Update their sessiontoken cookie, ignoring current cookie
 						setCookie(request, response, cookie);
-						getCookieDebug(request);
-						response.end("Your data from the db is: \n" + JSON.stringify(userRow))
+
+						// Update database with the cookie
+						const [beforeUpdate, updateRow] = await Promise.all([
+							db.get('SELECT Username,Cookies FROM Users WHERE Username = ? AND Password = ?', userPOST, pswdPOST),
+							db.get('UPDATE Users SET Cookies = ? WHERE Username = ?', cookie, userPOST)
+						]);
+						// Grab the row of that user again to see the difference
+						const [afterUpdate] = await Promise.all([
+							db.get('SELECT Username,Cookies FROM Users WHERE Username = ? AND Password = ?', userPOST, pswdPOST)
+						]);
+						console.log(beforeUpdate, afterUpdate);
+						if (afterUpdate == undefined) {
+							console.error("Undefined row to update"); // Problem!
+							response.end("There was a problem setting your cookies, try again.")
+						} else {
+							console.log("Database user row updated:");
+							console.log(afterUpdate);
+							response.end("<h2>Your data from the db is: " + JSON.stringify(userRow) + '</h2><br>Loading chat...' + '<meta http-equiv="refresh" content="2; url=/chat">')
+						}
 					}
 				}).catch((error) => {
 					throw Error("Oopsie woopsie i couldnt check database, error is => \n" + error);
@@ -116,7 +200,6 @@ app.get('/db', async function (request, response) {
 			.then(async (db) => {
 				// interact with the database somehow
 				const [profilePosts] = await Promise.all([
-					// db.get('SELECT * FROM Post WHERE id = ?', req.params.id),
 					db.all('SELECT * FROM Profile')
 				]);
 				// pulling data from database (shows in browser)
