@@ -14,6 +14,7 @@ var io = socketIO(server);
 app.set('port', 80);
 app.use(express.json())
 app.use('/scripts', express.static(__dirname + '/scripts'));
+app.use('/css', express.static(__dirname + '/css'));
 
 // Routing the url at path '/' to the index.html file in the html folder
 app.get('/', function (request, response) {

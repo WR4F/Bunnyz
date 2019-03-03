@@ -4,17 +4,23 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>Login</title>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login</title>
+    <link rel="stylesheet" href="css/login.Css">
 </head>
 
-<body>
+<body style="background:rgb(70, 69, 69); color:rgb(167, 167, 167);">
+    <h1>Sign in to Chatter Bunnyz </h1>
 <form action="/login" method="post">
-    <div>Username</div>
-    <input name="user" type="text">
+    <div>UserName</div>
+    <input name="user" type="text" placeholder="Enter UserName">
     <div>Password</div>
-    <input name="pswd" type="text">
+    <input name="pswd" type="text" placeholder="Enter Password">
+    <br>
     <button type="submit">Login</button>
+    <br>
+    <a href="#">Reset Password</a><br>
+    <a href="#">Don't have an account? Sign up!</a><br>
 </form>
 </body>
 
