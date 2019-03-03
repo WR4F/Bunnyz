@@ -14,19 +14,16 @@
 	<br>
 	<br>
 	<h1> Create an account </h1>
-	<form action="/login" method="post">
-		<div>EMAIL</div>
-		<input text="user" type="text" placeholder="Enter Email">
-		<br>
+	<form action="/register" method="post">
 		<div>USERNAME</div>
-		<input text="password" type="text" placeholder="Enter Username">
+		<input name="user" type="text" placeholder="Enter Username">
 		<br>
 		<div>PASSWORD</div>
-		<input text="password" type="text" placeholder="Enter Password">
+		<input name="pswd" type="password" placeholder="Enter Password">
 		<br>
-		<a> <button href="debugchat" type="submit">Continue</button> </a>
+		<a> <button href="/debugchat" type="submit">Continue</button> </a>
 		<br>
-		<a href="login">Already have an account? Log In!</a>
+		<a href="/login">Already have an account? Log In!</a>
 		<br>
 	</form>
 </body>
